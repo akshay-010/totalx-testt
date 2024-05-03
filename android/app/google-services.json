@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "469576569317",
+    "project_id": "totalx-test",
+    "storage_bucket": "totalx-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:469576569317:android:21cab677583d197adcdf0c",
+        "android_client_info": {
+          "package_name": "com.example.machinetestt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRbK-qosWr2ZhsshNRMY1f0YyGZp3I7RE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
