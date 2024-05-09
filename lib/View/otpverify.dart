@@ -1,35 +1,32 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:machinetestt/View/userlists.dart';
 import 'package:pinput/pinput.dart';
 
+
 import '../Controller/backendservices.dart';
 
-class OtpVerification extends StatefulWidget {
-  final String verificationId;
-  final String mobileNumber;
-
-  OtpVerification({
-    Key? key,
-    required this.verificationId,
-    required this.mobileNumber,
-  }) : super(key: key);
+class OtpScreen extends StatefulWidget {
+  final String verificationid;
+  final String mobilenumber;
+  OtpScreen({
+    super.key,
+    required this.verificationid,
+    required this.mobilenumber,
+  });
 
   @override
-  _OtpVerificationState createState() => _OtpVerificationState();
+  State<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpVerificationState extends State<OtpVerification> {
+class _OtpScreenState extends State<OtpScreen> {
   final _formState = GlobalKey<FormState>();
-  final otp = TextEditingController();
+
   late Timer _timer;
+
   int _seconds = 59;
 
   @override
@@ -57,125 +54,107 @@ class _OtpVerificationState extends State<OtpVerification> {
   }
 
   void resendOtp() {
-
     setState(() {
       _seconds = 59;
       startTimer();
     });
   }
+
+  String text = '';
+
+  final otp = TextEditingController();
+
   BackendServices backendServices = BackendServices();
+
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: HexColor("#FAFAFA"),
       body: SafeArea(
-        child: SizedBox(
-          height: height,
-          width: width,
+        child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: height * 0.03),
-                Image.asset("assets/OBJECTS.png"),
-                SizedBox(height: height * 0.075),
+                SizedBox(height: screenHeight * 0.05),
+                Center(
+                  child: Image.asset("assets/Group (3).png"),
+                ),
+                SizedBox(height: screenHeight * 0.04),
+                const Text(
+                  "OTP Verification",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                const Text(
+                  "Enter the verification code we just sent to your\n number +91 *******21.",
+                ),
+                SizedBox(height: screenHeight * 0.04),
                 Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "OTP Verification",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: GoogleFonts.inter().fontFamily,
-                      fontWeight: FontWeight.w900,
-                      fontSize: height * 0.016,
+                  alignment: Alignment.center,
+                  child: Pinput(
+                    focusedPinTheme: PinTheme(
+                      width: 41,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          border: Border.all(
+                            color: Colors.green,
+                          ),
+                          borderRadius: BorderRadius.circular(7)),
                     ),
-                  ),
-                ),
-                SizedBox(height: height * 0.02),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Enter the verification code we just sent to your\nnumber +91 ${widget.mobileNumber.substring(widget.mobileNumber.length - 2)}.",
-                    style: TextStyle(
-                      fontFamily: GoogleFonts.montserrat().fontFamily,
-                    ),
-                  ),
-                ),
-                SizedBox(height: height * 0.03),
-                Pinput(
-                  focusedPinTheme: PinTheme(
-                    width: 41,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      border: Border.all(
-                        color: Colors.green,
+                    controller: otp,
+                    length: 6,
+                    cursor: const Icon(Icons.linear_scale),
+                    defaultPinTheme: PinTheme(
+                      width: 41,
+                      height: 40,
+                      textStyle: TextStyle(
+                          fontSize: 20,
+                          color: HexColor("#FF5454"),
+                          fontWeight: FontWeight.w600),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: HexColor("#100E09")),
+                        borderRadius: BorderRadius.circular(7),
                       ),
-                      borderRadius: BorderRadius.circular(7),
-                    ),
-                  ),
-                  controller: otp,
-                  length: 6,
-                  cursor: const Icon(Icons.linear_scale),
-                  defaultPinTheme: PinTheme(
-                    width: 41,
-                    height: 40,
-                    textStyle: TextStyle(
-                      fontSize: 20,
-                      color: HexColor("#FF5454"),
-                      fontWeight: FontWeight.w600,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: HexColor("#100E09")),
-                      borderRadius: BorderRadius.circular(7),
                     ),
                   ),
                 ),
-                SizedBox(height: height * 0.012),
-                Text(
-                  "${_seconds.toString().padLeft(2, '0')} Sec",
-                  style: TextStyle(color: HexColor("#FF5454")),
-                ),
-                SizedBox(height: height * 0.025),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      const TextSpan(
-                        text: "Don't Get OTP?  ",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      TextSpan(
-                        text: "Resend",
-                        style: TextStyle(
-                          color: HexColor("#2873F0"),
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
+                SizedBox(height: screenHeight * 0.02),
 
-                            resendOtp();
-                          },
-                      ),
-                    ],
-                  ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text("${_seconds.toString().padLeft(2, '0')} Sec",style: TextStyle(color: Colors.red
+                  ),),
                 ),
-                SizedBox(height: height * 0.024),
-                SizedBox(
-                  height: height * 0.06,
+                SizedBox(height: screenHeight * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    const Text("Don't Get OTP? "),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>  UserDetails(),
+                            ));
+                      },
+                      child: Text(
+                        "Resend",
+                        style: TextStyle(color: HexColor("2873F0")),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
                   child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all(
-                        HexColor("#100E09"),
-                      ),
-                    ),
                     onPressed: () async {
                       Navigator.push(
                           context,
@@ -185,26 +164,30 @@ class _OtpVerificationState extends State<OtpVerification> {
 
                       PhoneAuthCredential credential =
                       PhoneAuthProvider.credential(
-                          verificationId: widget.verificationId,
+                          verificationId: widget.verificationid,
                           smsCode: otp.text);
 
                       // Sign the user in (or link) with the credential
                       await backendServices.firebaseAuth
                           .signInWithCredential(credential);
                     },
-
-                    child: Center(
-                      child: Text(
-                        "Verify",
-                        style: TextStyle(
-                          color: HexColor("#FFFFFF"),
-                          fontFamily: GoogleFonts.montserrat().fontFamily,
-                          fontSize: height * 0.022,
-                        ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: HexColor("100E09"),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
                       ),
+                      minimumSize: Size(
+                        MediaQuery.of(context).size.width,
+                        45,
+                      ),
+                    ),
+                    child: const Text(
+                      "Verify",
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
+                SizedBox(height: screenHeight * 0.02),
               ],
             ),
           ),

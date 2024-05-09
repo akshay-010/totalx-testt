@@ -110,7 +110,7 @@ class LoginPage extends StatelessWidget {
                        style: ButtonStyle(shape:MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),backgroundColor: MaterialStatePropertyAll(HexColor("#100E09")),),
                        onPressed: (){
                          //some issues firebase otp
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerification(verificationId: "jCseqpfWL7fRwfw20P9bKKGvH4L2", mobileNumber: 9037666879.toString())));
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpScreen(verificationid: "jCseqpfWL7fRwfw20P9bKKGvH4L2", mobilenumber: 9037666879.toString())));
 
                          backendServices.initiatePhoneVerification(context,phoneController);
                        },

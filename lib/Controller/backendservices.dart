@@ -29,10 +29,10 @@ class BackendServices {
      Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => OtpVerification(
-              verificationId: verificationId,
-              mobileNumber:
-              '$selectedcountrycode${phoneController.text}')),
+          builder: (context) => OtpScreen(
+           verificationid: verificationId,
+           mobilenumber:
+              '$selectedcountrycode${phoneController.text}',)),
      );
     },
     codeAutoRetrievalTimeout: (String verificationId) {
