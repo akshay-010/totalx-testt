@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:machinetestt/View/otpverify.dart';
+import 'package:machinetestt/View/userlists.dart';
 class BackendServices {
  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -57,13 +58,12 @@ class BackendServices {
    await FirebaseAuth.instance.signInWithCredential(credential);
    // Check if the user is signed in
    if (authResult.user != null) {
-    // User signed in successfully, navigate to the next screen
-    // Navigator.pushReplacement(
-    //  context,
-    //  MaterialPageRoute(
-    //   builder: (context) => OtpVerification(verificationid: verificationid, mobilenumber: mobilenumber),
-    //  ),
-    // );
+    Navigator.pushReplacement(
+     context,
+     MaterialPageRoute(
+      builder: (context) => UserDetails()
+     ),
+    );
    } else {
     // Handle sign in failure
     ScaffoldMessenger.of(context).showSnackBar(

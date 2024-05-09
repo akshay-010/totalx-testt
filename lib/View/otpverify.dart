@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:machinetestt/View/userlists.dart';
 import 'package:pinput/pinput.dart';
+
+import '../Controller/backendservices.dart';
 
 class OtpVerification extends StatefulWidget {
   final String verificationId;
@@ -60,7 +63,7 @@ class _OtpVerificationState extends State<OtpVerification> {
       startTimer();
     });
   }
-
+  BackendServices backendServices = BackendServices();
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -152,6 +155,7 @@ class _OtpVerificationState extends State<OtpVerification> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
+
                             resendOtp();
                           },
                       ),
@@ -172,12 +176,23 @@ class _OtpVerificationState extends State<OtpVerification> {
                         HexColor("#100E09"),
                       ),
                     ),
-                    onPressed: () {
-                      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-                        verificationId: widget.verificationId,
-                        smsCode: otp.text,
-                      );
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>  UserDetails(),
+                          ));
+
+                      PhoneAuthCredential credential =
+                      PhoneAuthProvider.credential(
+                          verificationId: widget.verificationId,
+                          smsCode: otp.text);
+
+                      // Sign the user in (or link) with the credential
+                      await backendServices.firebaseAuth
+                          .signInWithCredential(credential);
                     },
+
                     child: Center(
                       child: Text(
                         "Verify",
