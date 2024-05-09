@@ -4,7 +4,6 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:machinetestt/Controller/backendservices.dart';
 import 'package:machinetestt/View/otpverify.dart';
 import 'package:machinetestt/View/userlists.dart';
-import 'package:number_key/keyboard.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -52,23 +51,26 @@ class LoginPage extends StatelessWidget {
                        hintStyle: TextStyle(
                            fontFamily: GoogleFonts.montserrat().fontFamily,fontSize: height*0.016
                        ),
-                       contentPadding: EdgeInsets.symmetric(vertical: 4,horizontal: 10),
+                       contentPadding: const EdgeInsets.symmetric(vertical: 4,horizontal: 10),
                        enabledBorder: OutlineInputBorder(
                            borderRadius: BorderRadius.circular(10),
                            borderSide: BorderSide(color: HexColor("#000000").withOpacity(0.4))
                        ),
                        focusedBorder: OutlineInputBorder(
                            borderRadius: BorderRadius.circular(10),
-                           borderSide: BorderSide(
+                           borderSide: const BorderSide(
                                color: Colors.black
                            )
                        ),
                      ),
                    ),
+                   SizedBox(
+                     height: height*0.003,
+                   ),
                    RichText(
                      text: TextSpan(
                        children: [
-                         TextSpan(
+                         const TextSpan(
                              text: 'By Continuing, I agree to TotalX’s',
                              style: TextStyle(
                                  color: Colors.black
@@ -80,12 +82,12 @@ class LoginPage extends StatelessWidget {
                              color: HexColor("2873F0"),
                            ),
                          ),
-                         TextSpan(
+                         const TextSpan(
                              text: ' & ',
                              style: TextStyle(
                                  color: Colors.black
                              )
-                         ),TextSpan(
+                         ),const TextSpan(
                              text: '\n'
                          ),
                          TextSpan(
@@ -107,7 +109,9 @@ class LoginPage extends StatelessWidget {
                      child: ElevatedButton(
                        style: ButtonStyle(shape:MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(25))),backgroundColor: MaterialStatePropertyAll(HexColor("#100E09")),),
                        onPressed: (){
-                         Navigator.push(context, MaterialPageRoute(builder: (context)=>UserLists()));
+                         //some issues firebase otp
+                         Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerification(verificationId: "jCseqpfWL7fRwfw20P9bKKGvH4L2", mobileNumber: 9037666879.toString())));
+
                          backendServices.initiatePhoneVerification(context,phoneController);
                        },
                        child: Center(
@@ -134,7 +138,7 @@ class LoginPage extends StatelessWidget {
             //     ),
             //   ),
             // ),
-            
+
           ],
         ),
       ),

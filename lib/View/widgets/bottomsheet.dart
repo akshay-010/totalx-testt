@@ -1,68 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 
 import '../../Controller/provider.dart';
 
-void botttomSheetss(context) {
-  final height = MediaQuery.of(context).size.height;
-  final width = MediaQuery.of(context).size.width;
+
+void sortingBar(
+    BuildContext context, bool? isOlder, Function(bool?) sortUsers) {
   showModalBottomSheet(
-      context: context,
-      builder: (BuildContext as) {
-        return Consumer<User>(builder: (context, provider, _) {
+    context: context,
+    builder: (BuildContext bc) {
+      return Consumer<User>(
+        builder: (context, provider, _) {
           return Container(
-            height: height / 3.5,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    topLeft: Radius.circular(10))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+              ),
+            ),
+            child: Wrap(
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.only(left: 25.0, top: 10),
+                  child: Text("Sort", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                ),
                 ListTile(
-                  leading: Text(
-                    "Sort",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15),
+                  leading: Radio<bool?>(
+                    value: null,
+                    groupValue: isOlder,
+                    onChanged: (bool? value) {
+                      Navigator.pop(context);
+                      sortUsers(value);
+                    },
                   ),
+                  title: const Text("All"),
                 ),
                 ListTile(
-                  leading: Radio(
-                    activeColor: HexColor("#2873F0"),
-                      value: 'value1',
-                      groupValue: provider.age,
-                      onChanged: (value) {
-                        provider.radio(value);
-                      }),
-                  title: Text("All"),
+                  leading: Radio<bool?>(
+                    value: true,
+                    groupValue: isOlder,
+                    onChanged: (bool? value) {
+                      Navigator.pop(context);
+                      sortUsers(value);
+                    },
+                  ),
+                  title: const Text("Older"),
                 ),
                 ListTile(
-                  leading: Radio(
-                      activeColor: HexColor("#2873F0"),
-                      value: 'value2',
-                      groupValue: provider.age,
-                      onChanged: (value) {
-                        provider.radioa(value);
-                      }),
-                  title: Text("Age: Elder"),
+                  leading: Radio<bool?>(
+                    value: false,
+                    groupValue: isOlder,
+                    onChanged: (bool? value) {
+                      Navigator.pop(context);
+                      sortUsers(value);
+                    },
+                  ),
+                  title: const Text("Younger"),
                 ),
-                ListTile(
-                  leading: Radio(
-                      activeColor: HexColor("#2873F0"),
-                      value: 'value3',
-                      groupValue: provider.age,
-                      onChanged: (value) {
-                        provider.radiob(value);
-                      }),
-                  title: Text("Age: Younger"),
-                )
               ],
             ),
           );
-        });
-      });
+        },
+      );
+    },
+  );
 }

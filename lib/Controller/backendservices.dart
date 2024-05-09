@@ -29,8 +29,8 @@ class BackendServices {
       context,
       MaterialPageRoute(
           builder: (context) => OtpVerification(
-              verificationid: verificationId,
-              mobilenumber:
+              verificationId: verificationId,
+              mobileNumber:
               '$selectedcountrycode${phoneController.text}')),
      );
     },
@@ -67,7 +67,7 @@ class BackendServices {
    } else {
     // Handle sign in failure
     ScaffoldMessenger.of(context).showSnackBar(
-     SnackBar(
+     const SnackBar(
       content: Text('Sign in failed'),
      ),
     );

@@ -70,145 +70,143 @@ class AlertBox extends StatelessWidget {
                   height: 8,
                 ),
                 Align(
-                  alignment: Alignment.center,
-                  child: userProvider.image == null
-                      ? Stack(
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 100,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Container(
-                              height: height * 0.10,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey,
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage(
-                                    "asset/images/user (10) 1.png",
-                                  )
+                    alignment: Alignment.center,
+                    child: userProvider.image == null
+                        ? Stack(
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 100,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Container(
+                                height: 66,width: 66,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage(
+                                      "assets/user (10) 1.png",
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        top: 66,
-                        left: 7,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Stack(
-                            children: [
-                              Container(
-                                height: 30,
-                                width: 124,
-                                color: Colors.transparent,
-                              ),
-                              Positioned(
-                                bottom: 10,
-                                child: Opacity(
-                                  opacity: 0.8,
-                                  child: InkWell(
-                                    onTap: () {
-                                      userProvider.pickImage(ImageSource.gallery);
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.bottomCenter,
-                                      height: 85,
-                                      width: 85,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.black.withOpacity(0.6),
-                                      ),
-                                      child: const Icon(
-                                        Icons.camera_alt_outlined,
-                                        color: Colors.white,
-                                        size: 18,
+                        Positioned(
+                          top: 65,
+                          left: 8,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 120,
+                                  color: Colors.transparent,
+                                ),
+                                Positioned(
+                                  bottom: 10,
+                                  child: Opacity(
+                                    opacity: 0.8,
+                                    child: InkWell(
+                                      onTap: () {
+                                        userProvider.pickImage(ImageSource.gallery);
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.bottomCenter,
+                                        height: 84,
+                                        width: 84,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.black.withOpacity(0.6),
+                                        ),
+                                        child: const Icon(
+                                          Icons.camera_alt_outlined,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  )
-                      : Stack(
-                    children: [
-                      Container(
-                        height: 100,
-                        width: 100,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Container(
-                              height: height * 0.10,
-                              decoration: BoxDecoration(shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: FileImage(userProvider.image!),
+                      ],
+                    )
+                        : Stack(
+                      children: [
+                        Container(
+                          height: 100,
+                          width: 100,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Center(
+                              child: Container(
+                                height: 66,width: 66,
+                                decoration: BoxDecoration(shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: FileImage(userProvider.image!),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        top: 76,
-                        left: 6,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Stack(
-                            children: [
-                              Container(
-                                height: 30,
-                                width: 130,
-                                color: Colors.transparent,
-                              ),
-                              Positioned(
-                                bottom: 10,
-                                child: Opacity(
-                                  opacity: 0.8,
-                                  child: InkWell(
-                                    onTap: () {
-                                      userProvider.pickImage(ImageSource.gallery);
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.bottomCenter,
-                                      height: 90,
-                                      width: 90,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.black.withOpacity(0.6),
-                                      ),
-                                      child: const Icon(
-                                        Icons.camera_alt_outlined,
-                                        color: Colors.white,
-                                        size: 18,
+                        Positioned(
+                          top: 65,
+                          left: 8,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 120,
+                                  color: Colors.transparent,
+                                ),
+                                Positioned(
+                                  bottom: 10,
+                                  child: Opacity(
+                                    opacity: 0.8,
+                                    child: InkWell(
+                                      onTap: () {
+                                        userProvider.pickImage(ImageSource.gallery);
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.bottomCenter,
+                                        height: 84,
+                                        width: 84,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.black.withOpacity(0.6),
+                                        ),
+                                        child: const Icon(
+                                          Icons.camera_alt_outlined,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),),
                 const SizedBox(
                   height: 10,
                 ),
@@ -222,7 +220,7 @@ class AlertBox extends StatelessWidget {
                 TextFormField(
                   controller: name,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8.8,),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8.8,horizontal: 8),
                     isDense: true,
                     filled: true,
                     fillColor: HexColor("FDFDFD"),
@@ -249,7 +247,8 @@ class AlertBox extends StatelessWidget {
                 TextField(
                   controller: age,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8.5,),
+
+                    contentPadding: const EdgeInsets.symmetric(vertical: 8.5,horizontal: 8),
                     isDense: true,
                     filled: true,
                     fillColor: HexColor("FDFDFD"),

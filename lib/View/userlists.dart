@@ -1,221 +1,277 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:machinetestt/View/widgets/alertbox.dart';
 import 'package:machinetestt/View/widgets/bottomsheet.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hexcolor/hexcolor.dart';
 
-class UserLists extends StatefulWidget {
-  UserLists({Key? key}) : super(key: key);
+class UserDetails extends StatefulWidget {
+  UserDetails({Key? key}) : super(key: key);
 
   @override
-  State<UserLists> createState() => _UserListsState();
+  _UserDetailsState createState() => _UserDetailsState();
 }
 
-class _UserListsState extends State<UserLists> {
+class _UserDetailsState extends State<UserDetails> {
   final CollectionReference usersCollection =
-  FirebaseFirestore.instance.collection('users');
+      FirebaseFirestore.instance.collection('users');
+  List<DocumentSnapshot> userDocs = [];
+  DocumentSnapshot? lastDocument;
+  final int perPage = 10;
+  bool hasMoreData = true;
+  bool isLoading = false;
 
-  late List<Map<String, dynamic>> allUsers = []; // New list to hold all users
-  late List<Map<String, dynamic>> foundUsers = []; // List to hold filtered users
+  late List<Map<String, dynamic>> allUsers = [];
+  late List<Map<String, dynamic>> foundUsers = [];
+  bool? isOlder;
 
   @override
   void initState() {
     super.initState();
-    _fetchUsers();
+    fetchInitialUsers();
   }
 
-  Future<void> _fetchUsers() async {
-    final snapshot = await usersCollection.get();
-    setState(() {
-      allUsers = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-      foundUsers = List.from(allUsers); // Initialize foundUsers with all users initially
-    });
+  // Future<void> _fetchUsers() async {
+  //   final snapshot = await usersCollection.get();
+  //   setState(() {
+  //     allUsers = snapshot.docs
+  //         .map((doc) => doc.data() as Map<String, dynamic>)
+  //         .toList();
+  //     foundUsers = List.from(allUsers);
+  //   });
+  // }
+  void fetchInitialUsers() async {
+    if (!hasMoreData || isLoading) return;
+    setState(() => isLoading = true);
+    Query query = usersCollection.orderBy('name').limit(perPage);
+
+    final QuerySnapshot snapshot = await query.get();
+    if (snapshot.docs.isEmpty) {
+      setState(() {
+        hasMoreData = false;
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        lastDocument = snapshot.docs.last;
+        userDocs.addAll(snapshot.docs);
+        allUsers.addAll(snapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
+        foundUsers = List.from(allUsers);
+        isLoading = false;
+      });
+    }
+  }
+
+  void fetchMoreUsers() async {
+    if (!hasMoreData || isLoading) return;
+    setState(() => isLoading = true);
+
+    Query query = usersCollection
+        .orderBy('name')
+        .startAfterDocument(lastDocument!)
+        .limit(perPage);
+
+    final QuerySnapshot snapshot = await query.get();
+    if (snapshot.docs.isEmpty) {
+      setState(() => hasMoreData = false);
+    } else {
+      setState(() {
+        lastDocument = snapshot.docs.last;
+        userDocs.addAll(snapshot.docs);
+        allUsers.addAll(snapshot.docs
+            .map((doc) => doc.data() as Map<String, dynamic>)
+            .toList());
+        foundUsers = List.from(allUsers);
+      });
+    }
+    setState(() => isLoading = false);
   }
 
   void _runFilter(String enteredKeyword) {
     if (enteredKeyword.isEmpty) {
       setState(() {
-        foundUsers = List.from(allUsers); // Reset foundUsers to all users when search is empty
+        foundUsers = List.from(allUsers);
       });
       return;
     }
     setState(() {
-      foundUsers = allUsers.where((user) =>
-          user["name"].toString().toLowerCase().contains(enteredKeyword.toLowerCase())).toList();
+      foundUsers = allUsers
+          .where((user) => user["name"]
+              .toString()
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
     });
+  }
 
-
-}
+  void _sortUsers(bool? isOlder) {
+    setState(() {
+      this.isOlder = isOlder;
+      if (isOlder == null) {
+        // No sorting applied, default list
+        foundUsers = List.from(allUsers);
+      } else if (isOlder) {
+        // Older users, age 60 and above
+        foundUsers = allUsers
+            .where((user) => int.parse(user['age'].toString()) >= 60)
+            .toList();
+        // Optionally sort these older users by age
+        foundUsers.sort((a, b) => int.parse(b['age'].toString())
+            .compareTo(int.parse(a['age'].toString())));
+      } else {
+        // Younger users, below age 60
+        foundUsers = allUsers
+            .where((user) => int.parse(user['age'].toString()) < 60)
+            .toList();
+        // Optionally sort these younger users by age
+        foundUsers.sort((a, b) => int.parse(a['age'].toString())
+            .compareTo(int.parse(b['age'].toString())));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      backgroundColor: HexColor("#EBEBEB"),
+      backgroundColor: HexColor("EBEBEB"),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: HexColor("#100E09"),
+        backgroundColor: Colors.black,
         title: Row(
           children: [
-            const Icon(
-              Icons.location_pin,
+            Icon(
+              Icons.location_on_outlined,
               color: Colors.white,
+              size: MediaQuery.of(context).size.width * 0.06,
             ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Expanded(
               child: Text(
                 "Nilambur",
-                style: TextStyle(color: Colors.white, fontSize: height * 0.02),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: MediaQuery.of(context).size.width * 0.045,
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: height * 0.017,
-            ),
-            Row(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    onChanged: _runFilter,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(vertical: 12),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(
-                          strokeAlign: BorderSide.strokeAlignInside,
-                          color: HexColor("#000000").withOpacity(0.5),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Form(
+                        child: TextFormField(
+                          // controller: _searchController,
+                          onChanged: _runFilter,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                              borderSide: BorderSide(color: HexColor("000000")),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                              borderSide: BorderSide(color: HexColor("000000")),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                              borderSide: BorderSide(color: HexColor("000000")),
+                            ),
+                            hintText: "Search now...",
+                            prefixIcon: const Icon(Icons.search),
+                          ),
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.only(left: 15, right: 14),
-                        child: Icon(
-                          Icons.search,
-                          size: 29,
+                    ),
+                    const SizedBox(width: 10),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 50),
+                      child: IconButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(HexColor("100E09")),
+                          shape:
+                              MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )),
                         ),
-                      ),
-                      hintText: "Search by name",
-                      hintStyle: TextStyle(
-                        color: Colors.black.withOpacity(0.4),
-                        fontFamily: GoogleFonts.montserrat().fontFamily,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: width * 0.034,
-                ),
-                IconButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all(HexColor("#100E09")),
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                        side: BorderSide.none,
-                        borderRadius: BorderRadius.circular(10),
+                        onPressed: () =>
+                            sortingBar(context, isOlder, _sortUsers),
+                        icon: const Icon(Icons.filter_list,
+                            color: Colors.white, size: 21),
                       ),
                     ),
-                  ),
-                  onPressed: () {
-                    botttomSheetss(context);
-                  },
-                  icon: const Icon(
-                    Icons.filter_list,
-                    color: Colors.white,
-                    size: 26,
-                  ),
-                )
+                  ],
+                ),
+                const SizedBox(height: 15),
+                const Text("Users Lists", style: TextStyle(fontSize: 15)),
+                const SizedBox(height: 5),
               ],
             ),
-            SizedBox(
-              height: height * 0.018,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: Text(
-                "Users Lists",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17,
-                  fontFamily: GoogleFonts.montserrat().fontFamily,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                  stream: usersCollection.snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return CircularProgressIndicator();
-                    }
-                    final docs = snapshot.data!.docs;
-                  return ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: foundUsers.length,
-                    itemBuilder: (context, index) {
-                      final user = foundUsers[index];
-                      return Card(
-                        color: HexColor("#FFFFFF"),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            radius: 25,
-                            backgroundImage: NetworkImage(user["image"]),
-                          ),
-                          title: Text(
-                            user["name"],
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                          subtitle: Text(
-                            user["age"],
-                            style: TextStyle(fontWeight: FontWeight.w400),
-                          ),
-                        ),
-                      );
-                    },
-                  );
+          ),
+          Expanded(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                if (!isLoading &&
+                    hasMoreData &&
+                    scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent) {
+                  fetchMoreUsers(); // Load more data
                 }
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertBox();
+                return true;
               },
-            );
-          },
-          backgroundColor: HexColor("#100E09"),
-          shape: const CircleBorder(),
-          child: const Center(
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
+              child: ListView.builder(
+                itemCount: foundUsers.length + (hasMoreData ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index >= foundUsers.length) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  Map<String, dynamic> user = foundUsers[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 12,right: 12),
+                    child: Card(
+                      color: Colors.white,
+                      child: ListTile(
+                        title: Text(user['name']),
+                        subtitle: Text('Age: ${user['age']}'),
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(user['image']),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => AlertBox(),
         ),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
