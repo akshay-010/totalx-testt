@@ -61,7 +61,7 @@ class BackendServices {
     Navigator.pushReplacement(
      context,
      MaterialPageRoute(
-      builder: (context) => UserDetails()
+      builder: (context) => UserListBody()
      ),
     );
    } else {

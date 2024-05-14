@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../Controller/provider.dart';
-
 
 void sortingBar(
     BuildContext context, bool? isOlder, Function(bool?) sortUsers) {
   showModalBottomSheet(
     context: context,
     builder: (BuildContext bc) {
-      return Consumer<User>(
+      return Consumer<UserProvider>(
         builder: (context, provider, _) {
           return Container(
             decoration: const BoxDecoration(

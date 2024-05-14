@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:machinetestt/Controller/provider.dart';
 import 'package:machinetestt/View/loginpage.dart';
+import 'package:machinetestt/View/userlists.dart';
 import 'package:machinetestt/firebase_options.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +25,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => User(),)
+        ChangeNotifierProvider(create: (context) => UserProvider(),),
+        ChangeNotifierProvider(create: (context) => OtpProvider(),)
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

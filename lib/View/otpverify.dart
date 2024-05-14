@@ -1,3 +1,4 @@
+
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:machinetestt/View/userlists.dart';
 import 'package:pinput/pinput.dart';
-
-
+import 'package:provider/provider.dart';
 import '../Controller/backendservices.dart';
+import '../Controller/provider.dart';
 
-class OtpScreen extends StatefulWidget {
+class OtpScreen extends StatelessWidget {
   final String verificationid;
   final String mobilenumber;
   OtpScreen({
@@ -18,56 +19,14 @@ class OtpScreen extends StatefulWidget {
     required this.mobilenumber,
   });
 
-  @override
-  State<OtpScreen> createState() => _OtpScreenState();
-}
-
-class _OtpScreenState extends State<OtpScreen> {
-  final _formState = GlobalKey<FormState>();
-
-  late Timer _timer;
-
-  int _seconds = 59;
-
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_seconds > 0) {
-          _seconds--;
-        } else {
-          _timer.cancel();
-        }
-      });
-    });
-  }
-
-  void resendOtp() {
-    setState(() {
-      _seconds = 59;
-      startTimer();
-    });
-  }
-
-  String text = '';
-
   final otp = TextEditingController();
 
   BackendServices backendServices = BackendServices();
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<OtpProvider>(context);
+
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -124,24 +83,24 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                 ),
                 SizedBox(height: screenHeight * 0.02),
-
                 Align(
                   alignment: Alignment.center,
-                  child: Text("${_seconds.toString().padLeft(2, '0')} Sec",style: TextStyle(color: Colors.red
-                  ),),
+                  child: Text(
+                    "${provider.seconds.toString().padLeft(2, '0')} Sec",
+                    style: TextStyle(color: Colors.red),
+                  ),
                 ),
                 SizedBox(height: screenHeight * 0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     const Text("Don't Get OTP? "),
                     InkWell(
                       onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>  UserDetails(),
+                              builder: (context) => UserListBody(),
                             ));
                       },
                       child: Text(
@@ -159,13 +118,13 @@ class _OtpScreenState extends State<OtpScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  UserDetails(),
+                            builder: (context) => UserList(),
                           ));
 
                       PhoneAuthCredential credential =
-                      PhoneAuthProvider.credential(
-                          verificationId: widget.verificationid,
-                          smsCode: otp.text);
+                          PhoneAuthProvider.credential(
+                              verificationId: verificationid,
+                              smsCode: otp.text);
 
                       // Sign the user in (or link) with the credential
                       await backendServices.firebaseAuth
